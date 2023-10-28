@@ -1,5 +1,9 @@
 package dark
 
+import (
+	"fmt"
+)
+
 /*
 Must wraps a function returning a value and an error, and panics if the error is not nil.
 
@@ -40,10 +44,17 @@ func MustNil(err error) {
 /*
 Try wraps a function and a catch function, and calls the catch function if the wrapped function panics.
 */
-func Try(tryFc func(), catchFc func(any)) {
+func Try(tryFc func(), catchFc func(error)) {
 	defer func() {
 		if err := recover(); err != nil {
-			catchFc(err)
+			// cast err to error or create a new error from err
+			if _, ok := err.(error); ok {
+				catchFc(err.(error))
+				return
+			}
+
+			// convert err to string
+			catchFc(fmt.Errorf("Try failed: %v", err))
 		}
 	}()
 	tryFc()

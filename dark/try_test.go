@@ -119,7 +119,7 @@ func TestTry(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name: "panic",
+			name: "panic with string",
 			args: args{
 				f: func() {
 					panic("some error")
@@ -127,10 +127,55 @@ func TestTry(t *testing.T) {
 			},
 			wantErr: true,
 		},
+		{
+			name: "panic with number",
+			args: args{
+				f: func() {
+					panic(1)
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "panic with error",
+			args: args{
+				f: func() {
+					panic(errors.New("some error"))
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "panic with nil",
+			args: args{
+				f: func() {
+					panic(nil)
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "panic with custom type",
+			args: args{
+				f: func() {
+					panic(struct{}{})
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "panic with pointer",
+			args: args{
+				f: func() {
+					panic(&struct{}{})
+				},
+			},
+			wantErr: true,
+		},
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			g := func(err interface{}) {
+			g := func(err error) {
 				if !test.wantErr {
 					t.Errorf("unexpected error: %v", err)
 				}
@@ -144,7 +189,7 @@ func TestTry(t *testing.T) {
 		Try(func() {
 			x = 1
 			panic(errors.New("some error"))
-		}, func(_ any) {
+		}, func(_ error) {
 			x = 10
 		})
 		if x != 10 {
@@ -156,7 +201,7 @@ func TestTry(t *testing.T) {
 		x := 0
 		Try(func() {
 			x = 1
-		}, func(_ any) {
+		}, func(_ error) {
 			x = 10
 		})
 		if x != 1 {
