@@ -95,4 +95,29 @@ func TestTry(t *testing.T) {
 			Try(test.args.f)(g)
 		})
 	}
+
+	t.Run("set variable in catch", func(t *testing.T) {
+		x := 0
+		Try(func() {
+			x = 1
+			panic(errors.New("some error"))
+		})(func(_ any) {
+			x = 10
+		})
+		if x != 10 {
+			t.Errorf("expected x to be 10, got %v", x)
+		}
+	})
+
+	t.Run("set variable if no panic", func(t *testing.T) {
+		x := 0
+		Try(func() {
+			x = 1
+		})(func(_ any) {
+			x = 10
+		})
+		if x != 1 {
+			t.Errorf("expected x to be 1, got %v", x)
+		}
+	})
 }
