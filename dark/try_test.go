@@ -57,6 +57,49 @@ func TestMust(t *testing.T) {
 	}
 }
 
+func TestMustNoErr(t *testing.T) {
+	type args struct {
+		err error
+	}
+	tests := []struct {
+		name      string
+		args      args
+		wantPanic bool
+	}{
+		{
+			name: "without panic when error is nil, and return value equals to input",
+			args: args{
+				err: nil,
+			},
+			wantPanic: false,
+		},
+		{
+			name: "with panic when error is not nil",
+			args: args{
+				err: errors.New("some error"),
+			},
+			wantPanic: true,
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+
+			defer func() {
+				if r := recover(); r != nil {
+					if !test.wantPanic {
+						t.Errorf("unexpected panic: %v", r)
+					}
+				}
+			}()
+
+			MustNil(test.args.err)
+			if test.wantPanic {
+				t.Errorf("expected panic, but got none")
+			}
+		})
+	}
+}
+
 func TestTry(t *testing.T) {
 	type args struct {
 		f func()

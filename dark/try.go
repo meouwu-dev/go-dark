@@ -31,6 +31,13 @@ func Must[T any](r T, err error) T {
 }
 
 /*
+MustNil panics if the error is not nil.
+*/
+func MustNil(err error) {
+	Must[any](nil, err)
+}
+
+/*
 Try wraps a function [tryFc] that may panic, and returns a function that wraps a function [catchFc] that handles the panic.
 
 Example:
