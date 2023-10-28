@@ -73,7 +73,7 @@ func main() {
     dark.Try(func() {
         dark.Must[string](failure())
         fmt.Printf("never reached")
-    })(func(err any) {
+    }, func(err error) {
         fmt.Printf("%v\n", err) // prints "some error"
     })
 }
