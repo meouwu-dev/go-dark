@@ -79,5 +79,25 @@ func main() {
 }
 ```
 
+## `AbortOnErr`
+
+Try without the catch block. It aborts the function when first panic occurs, and returns the error.
+
+### Example
+
+```go
+func failure() (string, error) {
+    return "", errors.New("some error")
+}
+
+func main() {
+    err := dark.AbortOnErr(func() {
+        dark.Must[string](failure())
+        fmt.Printf("never reached")
+    })
+    // err is "some error"
+}
+```
+
 
 
