@@ -38,30 +38,13 @@ func MustNil(err error) {
 }
 
 /*
-Try wraps a function [tryFc] that may panic, and returns a function that wraps a function [catchFc] that handles the panic.
-
-Example:
-
-	func failure() (string, error) {
-		return "", errors.New("some error")
-	}
-
-	func main() {
-		dark.Try(func() {
-			dark.Must[string](failure())
-			fmt.Printf("never reached")
-		})(func(err any) {
-			fmt.Printf("%v\n", err) // prints "some error"
-		})
-	}
+Try wraps a function and a catch function, and calls the catch function if the wrapped function panics.
 */
-func Try(tryFc func()) func(func(any)) {
-	return func(catchFc func(any)) {
-		defer func() {
-			if err := recover(); err != nil {
-				catchFc(err)
-			}
-		}()
-		tryFc()
-	}
+func Try(tryFc func(), catchFc func(any)) {
+	defer func() {
+		if err := recover(); err != nil {
+			catchFc(err)
+		}
+	}()
+	tryFc()
 }

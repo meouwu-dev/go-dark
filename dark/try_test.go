@@ -135,7 +135,7 @@ func TestTry(t *testing.T) {
 					t.Errorf("unexpected error: %v", err)
 				}
 			}
-			Try(test.args.f)(g)
+			Try(test.args.f, g)
 		})
 	}
 
@@ -144,7 +144,7 @@ func TestTry(t *testing.T) {
 		Try(func() {
 			x = 1
 			panic(errors.New("some error"))
-		})(func(_ any) {
+		}, func(_ any) {
 			x = 10
 		})
 		if x != 10 {
@@ -156,7 +156,7 @@ func TestTry(t *testing.T) {
 		x := 0
 		Try(func() {
 			x = 1
-		})(func(_ any) {
+		}, func(_ any) {
 			x = 10
 		})
 		if x != 1 {
