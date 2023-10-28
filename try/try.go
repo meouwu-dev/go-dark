@@ -2,7 +2,9 @@ package dark
 
 /*
 Must wraps a function returning a value and an error, and panics if the error is not nil.
+
 Usage: Must(f()) where f() returns (T, error)
+
 Example:
 
 	func success() (string, error) {
@@ -14,11 +16,11 @@ Example:
 	}
 
 	func main() {
-		r := Must(f())
+		r := dark.Must(success())
 		fmt.Println(r) // prints "hello"
 
-		r = Must(failure()) // panics
-		fmt.Println(r) // never reached
+		r = dark.Must(failure()) // panics
+		fmt.Println(r)           // never reached
 	}
 */
 func Must[T any](r T, err error) T {
@@ -30,11 +32,17 @@ func Must[T any](r T, err error) T {
 
 /*
 Try wraps a function [tryFc] that may panic, and returns a function that wraps a function [catchFc] that handles the panic.
+
 Example:
 
+	func failure() (string, error) {
+		return "", errors.New("some error")
+	}
+
 	func main() {
-		Try(func() {
-			panic(errors.New("some error"))
+		dark.Try(func() {
+			dark.Must[string](failure())
+			fmt.Printf("never reached")
 		})(func(err any) {
 			fmt.Printf("%v\n", err) // prints "some error"
 		})
