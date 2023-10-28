@@ -4,12 +4,14 @@
 
 A go package containing functions that are hated by Gophers.
 
-# `Must` function
+# Usage
+
+## `Must`
 
 The `Must` function is a function that takes a value and an error.
 It returns the value if the error is nil, otherwise it panics.
 
-## Example
+### Example
 
 ```go
 func success() (string, error) {
@@ -29,11 +31,11 @@ func main() {
 }
 ```
 
-# `Try` function
+## `Try`
 
 It is like the try/catch block in other languages.
 
-## Example
+### Example
 
 ```go
 func failure() (string, error) {
