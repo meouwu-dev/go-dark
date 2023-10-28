@@ -226,14 +226,14 @@ func TestAbortOnErr(t *testing.T) {
 			fn: func() {
 				panic("some error")
 			},
-			expectedErr: errors.New("Try failed: some error"),
+			expectedErr: errors.New("AbortOnErr: some error"),
 		},
 		{
 			name: "panic with error",
 			fn: func() {
 				panic(errors.New("some error"))
 			},
-			expectedErr: errors.New("Try failed: some error"),
+			expectedErr: errors.New("AbortOnErr: some error"),
 		},
 	}
 

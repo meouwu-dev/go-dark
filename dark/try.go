@@ -65,7 +65,7 @@ func AbortOnErr(fc func()) (returnError error) {
 
 			// convert err to string
 
-			returnError = fmt.Errorf("Try failed: %v", err)
+			returnError = fmt.Errorf("AbortOnErr: %v", err)
 		}
 	}()
 	fc()
