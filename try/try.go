@@ -34,9 +34,9 @@ Example:
 
 	func main() {
 		Try(func() {
-			panic("some error")
+			panic(errors.New("some error"))
 		})(func(err any) {
-			fmt.Println(err) // prints "some error"
+			fmt.Printf("%v\n", err) // prints "some error"
 		})
 	}
 */
