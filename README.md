@@ -31,6 +31,33 @@ func main() {
 }
 ```
 
+## `MustNil`
+
+The `MustNil` is the same as `Must` but it only takes an error.
+
+It panics if the error is not nil.
+
+### Example
+
+```go
+func success() error {
+    return nil
+}
+
+func failure() error {
+    return errors.New("some error")
+}
+
+func main() {
+    dark.MustNil(success())
+    fmt.Println("success")
+
+    dark.MustNil(failure()) // panics
+    fmt.Println("failure")  // never reached
+}
+
+```
+
 ## `Try`
 
 It is like the try/catch block in other languages.
