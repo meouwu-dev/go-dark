@@ -209,3 +209,53 @@ func TestTry(t *testing.T) {
 		}
 	})
 }
+func TestAbortOnErr(t *testing.T) {
+	tests := []struct {
+		name        string
+		fn          func()
+		expectedErr error
+	}{
+		{
+			name: "no error",
+			fn: func() {
+			},
+			expectedErr: nil,
+		},
+		{
+			name: "panic with string",
+			fn: func() {
+				panic("some error")
+			},
+			expectedErr: errors.New("Try failed: some error"),
+		},
+		{
+			name: "panic with error",
+			fn: func() {
+				panic(errors.New("some error"))
+			},
+			expectedErr: errors.New("Try failed: some error"),
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			err := AbortOnErr(test.fn)
+			if err == nil && test.expectedErr != nil {
+				t.Errorf("expected error, got nil")
+			}
+
+			if err != nil && test.expectedErr == nil {
+				t.Errorf("expected nil, got %v", err)
+			}
+
+			if err != nil && test.expectedErr != nil {
+				errMessage := err.Error()
+				expectedErrMessage := test.expectedErr.Error()
+				if errMessage != expectedErrMessage {
+					t.Errorf("expected %v, got %v", expectedErrMessage, errMessage)
+				}
+			}
+		})
+	}
+
+}

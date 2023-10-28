@@ -45,17 +45,29 @@ func MustNil(err error) {
 Try wraps a function and a catch function, and calls the catch function if the wrapped function panics.
 */
 func Try(tryFc func(), catchFc func(error)) {
+	err := AbortOnErr(tryFc)
+	if err != nil {
+		catchFc(err)
+	}
+}
+
+/*
+AbortOnErr wraps a function and aborts on panic.
+The function aborts on the first panic, and returns the panic error as a return value.
+*/
+func AbortOnErr(fc func()) (returnError error) {
 	defer func() {
 		if err := recover(); err != nil {
 			// cast err to error or create a new error from err
 			if _, ok := err.(error); ok {
-				catchFc(err.(error))
-				return
+				returnError = err.(error)
 			}
 
 			// convert err to string
-			catchFc(fmt.Errorf("Try failed: %v", err))
+
+			returnError = fmt.Errorf("Try failed: %v", err)
 		}
 	}()
-	tryFc()
+	fc()
+	return nil
 }
